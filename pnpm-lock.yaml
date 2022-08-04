@@ -59,7 +59,7 @@ dependencies:
   class-validator: 0.13.2
   cookie-parser: 1.4.6
   mysql2: 2.3.3
-  parkingspace-commons: github.com/team-spacelab/parkingspace-commons/2dc232150233ff5cc046fd8f1d3dd93bec265ca6_smfbgufrmj2fd6d32wpoj66svu
+  parkingspace-commons: github.com/team-spacelab/parkingspace-commons/e6e1fdc177e8fe792dff9d255189c0c74eae357e_smfbgufrmj2fd6d32wpoj66svu
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.6
@@ -5888,9 +5888,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/team-spacelab/parkingspace-commons/2dc232150233ff5cc046fd8f1d3dd93bec265ca6_smfbgufrmj2fd6d32wpoj66svu:
-    resolution: {tarball: https://codeload.github.com/team-spacelab/parkingspace-commons/tar.gz/2dc232150233ff5cc046fd8f1d3dd93bec265ca6}
-    id: github.com/team-spacelab/parkingspace-commons/2dc232150233ff5cc046fd8f1d3dd93bec265ca6
+  github.com/team-spacelab/parkingspace-commons/e6e1fdc177e8fe792dff9d255189c0c74eae357e_smfbgufrmj2fd6d32wpoj66svu:
+    resolution: {tarball: https://codeload.github.com/team-spacelab/parkingspace-commons/tar.gz/e6e1fdc177e8fe792dff9d255189c0c74eae357e}
+    id: github.com/team-spacelab/parkingspace-commons/e6e1fdc177e8fe792dff9d255189c0c74eae357e
     name: parkingspace-commons
     version: 0.0.0
     peerDependencies:
