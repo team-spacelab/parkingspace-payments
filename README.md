@@ -7,4 +7,4 @@ git clone https://github.com/team-spacelab/parkingspace-payments`
 3. Run!  
 `pnpm start:dev`
 
-## [Docs](https://parkingspace.spacelab/api/payments)
+## [Docs](https://parking.spacelab.work/api/payments)
