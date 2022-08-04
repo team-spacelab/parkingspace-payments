@@ -11,7 +11,7 @@ async function bootstrap () {
     .setVersion('1.0')
     .build()
 
-  setupCommons(app, 'payment')
+  setupCommons(app, 'payments')
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
