@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Zones } from './zones.entity'
 import { ZonesService } from './zones.service'
+import { Zones, Spaces } from 'parkingspace-commons'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Zones])],
+  imports: [TypeOrmModule.forFeature([Zones, Spaces])],
   providers: [ZonesService],
   exports: [ZonesService]
 })

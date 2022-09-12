@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  ../../../commons/dist/entity: github:team-spacelab/parkingspace-commons#pkg
   '@nestjs/cli': ^8.0.0
   '@nestjs/common': ^8.0.0
   '@nestjs/config': ^2.2.0
@@ -10,7 +11,7 @@ specifiers:
   '@nestjs/schematics': ^8.0.0
   '@nestjs/swagger': ^6.0.4
   '@nestjs/testing': ^8.0.0
-  '@nestjs/typeorm': ^9.0.0
+  '@nestjs/typeorm': 8.1.4
   '@types/cookie-parser': ^1.4.3
   '@types/express': ^4.17.13
   '@types/jest': 27.5.0
@@ -35,7 +36,7 @@ specifiers:
   prettier: ^2.3.2
   reflect-metadata: ^0.1.13
   rimraf: ^3.0.2
-  rxjs: ^7.2.0
+  rxjs: ^7.5.6
   source-map-support: ^0.5.20
   superagent: ^8.0.0
   supertest: ^6.1.3
@@ -48,18 +49,19 @@ specifiers:
   undici: ^5.8.0
 
 dependencies:
+  ../../../commons/dist/entity: github.com/team-spacelab/parkingspace-commons/d5201ced1965dc882a32dd5410324f223c5a9035_smfbgufrmj2fd6d32wpoj66svu
   '@nestjs/common': 8.4.7_allg6cauirbqzgqcmexy2wdnoq
   '@nestjs/config': 2.2.0_zyw32gfu5yv6lfoz64j5eiekme
   '@nestjs/core': 8.4.7_vfcxgjfmqg6zhc6pfncoklq5wm
   '@nestjs/jwt': 9.0.0_@nestjs+common@8.4.7
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   '@nestjs/swagger': 6.0.4_jgos3tknxr3npmt3x2cmlilqyq
-  '@nestjs/typeorm': 9.0.0_zhrs42futwpjx7z3p6twpp4g7i
+  '@nestjs/typeorm': 8.1.4_zhrs42futwpjx7z3p6twpp4g7i
   class-transformer: 0.5.1
   class-validator: 0.13.2
   cookie-parser: 1.4.6
   mysql2: 2.3.3
-  parkingspace-commons: github.com/team-spacelab/parkingspace-commons/e6e1fdc177e8fe792dff9d255189c0c74eae357e_smfbgufrmj2fd6d32wpoj66svu
+  parkingspace-commons: github.com/team-spacelab/parkingspace-commons/d5201ced1965dc882a32dd5410324f223c5a9035_smfbgufrmj2fd6d32wpoj66svu
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.6
@@ -1090,28 +1092,11 @@ packages:
       tslib: 2.4.0
     dev: true
 
-  /@nestjs/typeorm/8.0.3_zhrs42futwpjx7z3p6twpp4g7i:
-    resolution: {integrity: sha512-tf9rTXP6LeFInkwd+tktQhtLRsKp4RRYImprqT8gcHcJDx+xMP1IygnXELOKwF5vo2/mnhrGtBlRQ/iiS6170g==}
+  /@nestjs/typeorm/8.1.4_zhrs42futwpjx7z3p6twpp4g7i:
+    resolution: {integrity: sha512-hKv0Y9PG7YkHQfjsrNqM1s/VajlT7Mla8gaoblmuLzgMKsOQFsZXSHlXNxXZ8CA4aCPeDUiXtvqc4zocadGiIQ==}
     peerDependencies:
       '@nestjs/common': ^8.0.0
       '@nestjs/core': ^8.0.0
-      reflect-metadata: ^0.1.13
-      rxjs: ^7.2.0
-      typeorm: ^0.2.34
-    dependencies:
-      '@nestjs/common': 8.4.7_allg6cauirbqzgqcmexy2wdnoq
-      '@nestjs/core': 8.4.7_vfcxgjfmqg6zhc6pfncoklq5wm
-      reflect-metadata: 0.1.13
-      rxjs: 7.5.6
-      typeorm: 0.3.7_pa4ea3wjef6s4gsskhbyci3cte
-      uuid: 8.3.2
-    dev: false
-
-  /@nestjs/typeorm/9.0.0_zhrs42futwpjx7z3p6twpp4g7i:
-    resolution: {integrity: sha512-pTH9ZlngObaPlt7//CY2lSb+3ouFczUQJln1ctXIpGwZdY3QBrwsxF3hnJXsCYNa+IPfz27qJUeoAQmp65kGZw==}
-    peerDependencies:
-      '@nestjs/common': ^8.0.0 || ^9.0.0
-      '@nestjs/core': ^8.0.0 || ^9.0.0
       reflect-metadata: ^0.1.13
       rxjs: ^7.2.0
       typeorm: ^0.3.0
@@ -5888,9 +5873,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/team-spacelab/parkingspace-commons/e6e1fdc177e8fe792dff9d255189c0c74eae357e_smfbgufrmj2fd6d32wpoj66svu:
-    resolution: {tarball: https://codeload.github.com/team-spacelab/parkingspace-commons/tar.gz/e6e1fdc177e8fe792dff9d255189c0c74eae357e}
-    id: github.com/team-spacelab/parkingspace-commons/e6e1fdc177e8fe792dff9d255189c0c74eae357e
+  github.com/team-spacelab/parkingspace-commons/d5201ced1965dc882a32dd5410324f223c5a9035_smfbgufrmj2fd6d32wpoj66svu:
+    resolution: {tarball: https://codeload.github.com/team-spacelab/parkingspace-commons/tar.gz/d5201ced1965dc882a32dd5410324f223c5a9035}
+    id: github.com/team-spacelab/parkingspace-commons/d5201ced1965dc882a32dd5410324f223c5a9035
     name: parkingspace-commons
     version: 0.0.0
     peerDependencies:
@@ -5900,7 +5885,7 @@ packages:
       '@nestjs/common': 8.4.7_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/config': 2.2.0_zyw32gfu5yv6lfoz64j5eiekme
       '@nestjs/jwt': 8.0.1_@nestjs+common@8.4.7
-      '@nestjs/typeorm': 8.0.3_zhrs42futwpjx7z3p6twpp4g7i
+      '@nestjs/typeorm': 8.1.4_zhrs42futwpjx7z3p6twpp4g7i
       class-transformer: 0.5.1
       class-validator: 0.13.2
       cookie-parser: 1.4.6

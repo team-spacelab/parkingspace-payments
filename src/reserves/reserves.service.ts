@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Between, Repository } from 'typeorm'
-import { Reserves } from './reserves.entity'
+import { Reserves } from 'parkingspace-commons'
 
 @Injectable()
 export class ReservesService {
@@ -10,19 +10,19 @@ export class ReservesService {
     private readonly reservesRepository: Repository<Reserves>
   ) {}
 
-  async foundAndCount (startat: Date, endat: Date) {
+  async foundAndCount (start: Date, end: Date) {
     return await this.reservesRepository.count({
       where: [
-        { reservesStartat: Between(startat, endat) },
-        { reservesEndat: Between(startat, endat) }
+        { startAt: Between(start, end) },
+        { endAt: Between(start, end) }
       ]
     })
   }
 
-  async createReserve (zonesId: number, usersId: number, startat: Date, endat: Date) {
+  async createReserve (zoneId: number, userId: number, startAt: Date, endAt: Date) {
     const reserve = await this.reservesRepository.insert({
-      zonesId, usersId, reservesStartat: startat, reservesEndat: endat, reservesStatus: 1
+      zoneId, userId, startAt, endAt, status: 0
     })
-    return reserve.generatedMaps[0].reservesId
+    return reserve.generatedMaps[0].id
   }
 }

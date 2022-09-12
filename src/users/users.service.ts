@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Users } from './users.entity'
+import { Users } from '../../../commons/dist/entity'
 
 @Injectable()
 export class UsersService {
@@ -10,7 +10,7 @@ export class UsersService {
     private readonly usersRepository: Repository<Users>
   ) {}
 
-  public async findOne (usersId: number) {
-    return await this.usersRepository.findOne({ where: { usersId } })
+  public async findOne (id: number) {
+    return await this.usersRepository.findOne({ where: { id } })
   }
 }

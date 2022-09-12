@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Cars } from './cars.entity'
+import { Cars } from 'parkingspace-commons'
 import { CarsService } from './cars.service'
 
 @Module({

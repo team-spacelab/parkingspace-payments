@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Cars } from './cars.entity'
+import { Cars } from 'parkingspace-commons'
 
 @Injectable()
 export class CarsService {
@@ -10,7 +10,7 @@ export class CarsService {
     private readonly carsRepository: Repository<Cars>
   ) {}
 
-  async findOne (carsId: number) {
-    return await this.carsRepository.findOneBy({ carsId })
+  async findOne (id: number) {
+    return await this.carsRepository.findOneBy({ id })
   }
 }
