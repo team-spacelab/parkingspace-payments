@@ -14,7 +14,7 @@ import { ZonesService } from 'src/zones/zones.service'
 import { Repository } from 'typeorm'
 import { ConfirmOrderBodyDto } from './dto/ConfirmOrderBody.dto'
 import { GenerateOrderBodyDto } from './dto/GenerateOrderBody.dto'
-import { Orders, OrderStatus } from 'parkingspace-commons'
+import { CarStatus, Orders, OrderStatus } from 'parkingspace-commons'
 import { randomUUID } from 'crypto'
 import { PgService } from 'src/pg/pg.service'
 
@@ -61,9 +61,10 @@ export class OrderService {
 
     const carInfo = await this.carsService.findOne(car)
     if (!carInfo) throw new NotFoundException()
-    if (carInfo.userId !== user.id) throw new NotAcceptableException('CAR_UNDEFIND')
+    if (carInfo.userId !== user.id) throw new NotAcceptableException('CAR_UNAVAILABLE')
+    if (carInfo.status === CarStatus.DELETED) throw new NotAcceptableException('CAR_UNAVAILABLE')
 
-    const reserveInfo = await this.reservesService.foundAndCount(startat, endat)
+    const reserveInfo = await this.reservesService.findAndCount(startat, endat)
     if (reserveInfo) throw new NotAcceptableException('RESERVE_UNAVAILABLE')
 
     const unit = (new Date(endat).getTime() - new Date(startat).getTime()) / 60000
@@ -72,7 +73,7 @@ export class OrderService {
     const amount = (zoneInfo.parentSpace.defaultCost + zoneInfo.costDiffrence) * unit - point
     if (amount < 0) throw new NotAcceptableException('COST_TOO_LOW')
 
-    const reserve = await this.reservesService.createReserve(zoneInfo.id, user.id, startat, endat)
+    const reserve = await this.reservesService.create(zoneInfo.id, user.id, startat, endat)
     const order = await this.ordersRepository.insert({
       id: randomUUID(),
       carId: carInfo.id,
