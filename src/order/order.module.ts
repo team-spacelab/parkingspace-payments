@@ -8,6 +8,7 @@ import { Orders } from 'parkingspace-commons'
 import { ZonesModule } from 'src/zones/zones.module'
 import { CarsModule } from 'src/cars/cars.module'
 import { ReservesModule } from 'src/reserves/reserves.module'
+import { PgModule } from 'src/pg/pg.module'
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { ReservesModule } from 'src/reserves/reserves.module'
     UsersModule,
     ZonesModule,
     CarsModule,
-    ReservesModule
+    ReservesModule,
+    PgModule
   ],
   providers: [ConfigService, OrderService],
   controllers: [OrderController]

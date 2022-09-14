@@ -4,7 +4,7 @@ import { IsNumber, IsString } from 'class-validator'
 export class ConfirmOrderBodyDto {
   @IsString()
   @ApiProperty()
-    orderId: number
+    orderId: string
 
   @IsString()
   @ApiProperty()

@@ -3,6 +3,7 @@ import { CryptoModule, DBConfigService, HealthModule, LoggerModule, ResolveToken
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { OrderModule } from './order/order.module'
+import { PgModule } from './pg/pg.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { OrderModule } from './order/order.module'
     OrderModule,
     LoggerModule,
     HealthModule,
-    CryptoModule
+    CryptoModule,
+    PgModule
   ]
 })
 export class AppModule implements NestModule {

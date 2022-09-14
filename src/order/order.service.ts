@@ -1,5 +1,4 @@
 import {
-  InternalServerErrorException,
   NotAcceptableException,
   UnauthorizedException,
   BadRequestException,
@@ -7,40 +6,46 @@ import {
   NotFoundException,
   Injectable
 } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CarsService } from 'src/cars/cars.service'
 import { ReservesService } from 'src/reserves/reserves.service'
 import { UsersService } from 'src/users/users.service'
 import { ZonesService } from 'src/zones/zones.service'
 import { Repository } from 'typeorm'
-import { request } from 'undici'
-import { HttpMethod } from 'undici/types/dispatcher'
 import { ConfirmOrderBodyDto } from './dto/ConfirmOrderBody.dto'
 import { GenerateOrderBodyDto } from './dto/GenerateOrderBody.dto'
-import { Orders } from 'parkingspace-commons'
+import { Orders, OrderStatus } from 'parkingspace-commons'
 import { randomUUID } from 'crypto'
+import { PgService } from 'src/pg/pg.service'
 
 @Injectable()
 export class OrderService {
   constructor (
-    private readonly configSerivce: ConfigService,
     @InjectRepository(Orders)
     private readonly ordersRepository: Repository<Orders>,
     private readonly reservesService: ReservesService,
     private readonly zonesService: ZonesService,
     private readonly usersService: UsersService,
-    private readonly carsService: CarsService
+    private readonly carsService: CarsService,
+    private readonly pgService: PgService
   ) {}
 
-  async getMethods (userId: number) {
-    const { statusCode, responseBody } = await this.requestToss('/v1/brandpay/payments/methods/' + userId, 'GET')
-    if (statusCode !== 200) throw new NotAcceptableException(responseBody.code)
-    const { isIdentified, selectedMethodId, cards, accounts } = responseBody
-    return {
-      default: selectedMethodId,
-      methods: isIdentified ? [].concat(cards, accounts) : []
-    }
+  async findOne (id: string, userId: number) {
+    const order = await this.ordersRepository.findOneBy({ id })
+    if (!order) throw new NotFoundException('ORDER_NOTFOUND')
+    if (order.userId !== userId) throw new ForbiddenException('ORDER_UNAVAILABLE')
+
+    return order
+  }
+
+  async findByUserId (userId: number) {
+    const orders = await this.ordersRepository.find({ where: { userId } })
+    return orders
+  }
+
+  async getPayments (userId: number) {
+    const payments = await this.pgService.getPayments(userId)
+    return payments
   }
 
   async generateOrder (userId: number, body: GenerateOrderBodyDto) {
@@ -85,27 +90,26 @@ export class OrderService {
     }
   }
 
-  async confirmOrder (userId: number, orderId: string, tossBody: ConfirmOrderBodyDto) {
-    const order = await this.ordersRepository.findOneBy({ id: orderId })
+  async confirmOrder (userId: number, tossBody: ConfirmOrderBodyDto) {
+    const order = await this.ordersRepository.findOneBy({ id: tossBody.orderId })
     if (!order) throw new NotFoundException('ORDER_NOTFOUND')
     if (order.userId !== userId) throw new ForbiddenException('ORDER_UNAVAILABLE')
     if (order.amount !== tossBody.amount) {
-      await this.requestToss('/v1/payments/' + tossBody.paymentKey + '/cancel', 'POST')
-      throw new NotAcceptableException('COST_MODIFIED')
+      this.pgService.cancelOrder(tossBody.paymentKey, '변조된 결제입니다.')
+      this.cancelOrder(order.id, userId, OrderStatus.CANCELED)
+      throw new NotAcceptableException('AMOUNT_NOT_MATCH')
     }
 
-    const { responseBody } =
-      await this.requestToss('/v1/brandpay/payments/confirm', 'POST', {
-        paymentKey: tossBody.paymentKey,
-        orderId,
-        customerKey: userId
-      })
+    const response = await this.pgService.confirmOrder(userId, tossBody.paymentKey, tossBody.orderId)
+    if (response.status !== 200) {
+      await this.updateOrder(tossBody.orderId, OrderStatus.CANCELED)
+      throw new BadRequestException(response.message)
+    }
 
-    if (responseBody.status !== 'DONE') throw new NotAcceptableException('ORDER_NOTCOMPLETED')
-    this.updateOrder(orderId, 3)
+    await this.updateOrder(tossBody.orderId, OrderStatus.DONE, response.data.receipt)
   }
 
-  private async updateOrder (id: string, status?: number, receipt?: string) {
+  private async updateOrder (id: string, status?: OrderStatus, receipt?: string) {
     const order = await this.ordersRepository.findOneBy({ id })
     if (!order) throw new NotFoundException('ORDER_NOTFOUND')
 
@@ -115,21 +119,12 @@ export class OrderService {
     })
   }
 
-  private async requestToss (url: string, method: HttpMethod, requestBody?: any) {
-    const secret = Buffer.from(this.configSerivce.get('TOSS_SECRET', '') + ':').toString('base64')
-    const { body, statusCode } = await request('https://api.tosspayments.com' + url, {
-      method,
-      body: JSON.stringify(requestBody),
-      headers: { authorization: `Basic ${secret}` }
-    })
+  async cancelOrder (id: string, userId: number, status: OrderStatus) {
+    const order = await this.ordersRepository.findOneBy({ id })
+    if (!order) throw new NotFoundException('ORDER_NOTFOUND')
+    if (order.userId !== userId) throw new ForbiddenException('ORDER_UNAVAILABLE')
 
-    const responseBody = await body.json()
-    if (statusCode === 400) throw new BadRequestException(responseBody.code)
-    if (statusCode === 404) throw new NotFoundException(responseBody.code)
-    if (statusCode === 403) throw new InternalServerErrorException(responseBody.code)
-    if (statusCode === 500) throw new InternalServerErrorException(responseBody.code)
-    if (statusCode !== 200) throw new InternalServerErrorException('')
-
-    return { statusCode, responseBody }
+    await this.reservesService.delete(order.reserveId)
+    await this.ordersRepository.update({ id: order.id }, { status })
   }
 }
