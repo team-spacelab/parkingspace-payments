@@ -68,8 +68,6 @@ export class OrderController {
   }
 
   @Get('/callback')
-  @ApiBearerAuth()
-  @UseGuards(ClientGuard)
   public async callbackAuth (
     @Query() query: GetAccessTokenQueryDto
   ) {
