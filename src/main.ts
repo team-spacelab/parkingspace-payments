@@ -14,7 +14,7 @@ async function bootstrap () {
   setupCommons(app, 'payments')
 
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api', app, document)
+  SwaggerModule.setup('api/payments/_docs', app, document)
   await app.listen(3000)
 }
 bootstrap()
