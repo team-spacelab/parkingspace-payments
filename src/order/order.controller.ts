@@ -1,15 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Res, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query, Res, UseGuards } from '@nestjs/common'
 import { Response } from 'express'
 import { OrderService } from './order.service'
 import { GenerateOrderBodyDto } from './dto/GenerateOrderBody.dto'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { ClientGuard, OrderStatus, ResponseBody } from 'parkingspace-commons'
 import { ConfirmOrderBodyDto } from './dto/ConfirmOrderBody.dto'
+import { PgService } from 'src/pg/pg.service'
+import { GetAccessTokenQueryDto } from './dto/GetAccessTokenQuery.dto'
 
 @Controller('order')
 export class OrderController {
   constructor (
-    private readonly orderSerivce: OrderService
+    private readonly orderSerivce: OrderService,
+    private readonly pgService: PgService
   ) {}
 
   @Get('/')
@@ -43,7 +46,7 @@ export class OrderController {
   @ApiBearerAuth()
   @UseGuards(ClientGuard)
   public async getMethods (@Res({ passthrough: true }) res: Response): Promise<ResponseBody<any>> {
-    const data = await this.orderSerivce.getPayments(res.locals.userId)
+    const data = await this.pgService.getPayments(res.locals.userId)
     return {
       success: true,
       data
@@ -62,6 +65,13 @@ export class OrderController {
       success: true,
       data
     }
+  }
+
+  @Get('/callback')
+  public async callbackAuth (
+    @Query() query: GetAccessTokenQueryDto
+  ) {
+    return await this.pgService.getToken(query.code, query.customerKey)
   }
 
   @Get('/:id')

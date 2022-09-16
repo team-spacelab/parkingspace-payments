@@ -43,11 +43,6 @@ export class OrderService {
     return orders
   }
 
-  async getPayments (userId: number) {
-    const payments = await this.pgService.getPayments(userId)
-    return payments
-  }
-
   async generateOrder (userId: number, body: GenerateOrderBodyDto) {
     const { zone, point, car, method, startat, endat } = body
     const user = await this.usersService.findOne(userId)
@@ -98,7 +93,7 @@ export class OrderService {
     if (order.amount !== tossBody.amount) {
       this.pgService.cancelOrder(tossBody.paymentKey, '변조된 결제입니다.')
       this.cancelOrder(order.id, userId, OrderStatus.CANCELED)
-      throw new NotAcceptableException('AMOUNT_NOT_MATCH')
+      throw new NotAcceptableException('ORDER_TAMPERING')
     }
 
     const response = await this.pgService.confirmOrder(userId, tossBody.paymentKey, tossBody.orderId)

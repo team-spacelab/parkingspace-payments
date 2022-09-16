@@ -9,6 +9,17 @@ export class PgService {
     private readonly configService: ConfigService
   ) {}
 
+  async getToken (code: string, customerKey: string) {
+    const { body } =
+      await this.request('/v1/brandpay/authorizations/access-token', 'POST', {
+        grantType: 'AuthorizationCode',
+        code,
+        customerKey
+      })
+
+    return body
+  }
+
   async getPayments (userId: number) {
     const { statusCode, body } =
       await this.request('/v1/brandpay/payments/methods/' + userId, 'GET')
@@ -58,7 +69,10 @@ export class PgService {
       await request('https://api.tosspayments.com' + path, {
         method,
         body: JSON.stringify(reqBody),
-        headers: { authorization: `Basic ${secret}` }
+        headers: {
+          authorization: `Basic ${secret}`,
+          'Content-Type': 'application/json'
+        }
       })
 
     return { statusCode, body: body.json() }
