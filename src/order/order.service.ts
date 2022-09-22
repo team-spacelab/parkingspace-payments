@@ -61,7 +61,7 @@ export class OrderService {
     const reserveInfo = await this.reservesService.findAndCount(startat, endat)
     if (reserveInfo) throw new NotAcceptableException('RESERVE_UNAVAILABLE')
 
-    const amount = Math.floor((endat.getTime() - startat.getTime()) / (zoneInfo.parentSpace.timeUnit * 60 * 1000) * zoneInfo.parentSpace.defaultCost) - point
+    const amount = Math.floor((new Date(endat).getTime() - new Date(startat).getTime()) / (zoneInfo.parentSpace.timeUnit * 60 * 1000) * zoneInfo.parentSpace.defaultCost) - point
     if (amount < 0) throw new NotAcceptableException('COST_TOO_LOW')
 
     const reserve = await this.reservesService.create(zoneInfo.id, user.id, startat, endat)

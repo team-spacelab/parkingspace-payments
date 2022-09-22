@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsDateString, IsNumber, IsString } from 'class-validator'
+import { IsDateString, IsNumber } from 'class-validator'
 
 export class GenerateOrderBodyDto {
   @IsNumber()
@@ -14,9 +14,9 @@ export class GenerateOrderBodyDto {
   @ApiProperty()
     car: number
 
-  @IsString()
+  @IsNumber()
   @ApiProperty()
-    method: string
+    method: number
 
   @IsDateString()
   @ApiProperty()
