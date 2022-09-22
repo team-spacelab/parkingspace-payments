@@ -12,9 +12,9 @@ export class PgService {
   async getToken (code: string, customerKey: string) {
     const { body } =
       await this.request('/v1/brandpay/authorizations/access-token', 'POST', {
-        grantType: 'AuthorizationCode',
         code,
-        customerKey: 'user' + customerKey
+        grantType: 'AuthorizationCode',
+        customerKey: 'user-' + customerKey
       })
 
     return body
@@ -22,7 +22,7 @@ export class PgService {
 
   async getPayments (userId: number) {
     const { statusCode, body } =
-      await this.request('/v1/brandpay/payments/methods/user' + userId, 'GET')
+      await this.request('/v1/brandpay/payments/methods/user-' + userId, 'GET')
 
     if (statusCode !== 200) return { cards: [], accounts: [] }
     return body
@@ -31,7 +31,7 @@ export class PgService {
   async confirmOrder (customerKey: number, paymentKey: string, orderId: string) {
     const { statusCode, body } =
       await this.request('/v1/brandpay/payments/confirm', 'POST', {
-        customerKey: 'user' + customerKey,
+        customerKey: 'user-' + customerKey,
         paymentKey,
         orderId
       }) as any
@@ -70,7 +70,7 @@ export class PgService {
         method,
         body: JSON.stringify(reqBody),
         headers: {
-          authorization: `Basic ${secret}`,
+          Authorization: `Basic ${secret}`,
           'Content-Type': 'application/json'
         }
       })
