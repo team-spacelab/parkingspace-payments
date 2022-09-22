@@ -14,7 +14,7 @@ export class PgService {
       await this.request('/v1/brandpay/authorizations/access-token', 'POST', {
         code,
         grantType: 'AuthorizationCode',
-        customerKey: 'user-' + customerKey
+        customerKey
       })
 
     return body
