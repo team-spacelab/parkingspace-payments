@@ -121,4 +121,16 @@ export class OrderService {
     await this.reservesService.delete(order.reserveId)
     await this.ordersRepository.update({ id: order.id }, { status })
   }
+
+  async webhook (body: any) {
+    if (body.eventType !== 'PAYMENT_STATUS_CHANGED') return
+    const { orderId, status } = body.data
+    const order = await this.ordersRepository.findOneBy({ id: orderId })
+    if (!order) throw new NotFoundException('ORDER_NOTFOUND')
+
+    if (status === 'CANCEL') {
+      await this.reservesService.delete(order.reserveId)
+      await this.ordersRepository.update({ id: order.id }, { status: OrderStatus.CANCELED })
+    }
+  }
 }
