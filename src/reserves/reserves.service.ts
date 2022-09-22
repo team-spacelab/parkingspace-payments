@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Between, Repository } from 'typeorm'
+import { Between, Not, Repository } from 'typeorm'
 import { Reserves } from 'parkingspace-commons'
 
 @Injectable()
@@ -49,7 +49,8 @@ export class ReservesService {
     return await this.reservesRepository.count({
       where: [
         { startAt: Between(start, end) },
-        { endAt: Between(start, end) }
+        { endAt: Between(start, end) },
+        { status: Not(2) }
       ]
     })
   }
