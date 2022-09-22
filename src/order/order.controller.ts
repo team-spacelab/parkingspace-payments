@@ -100,4 +100,14 @@ export class OrderController {
       success: true
     }
   }
+
+  @Post('/webhook')
+  public async webhook (
+    @Body() body: any
+  ): Promise<ResponseBody<any>> {
+    await this.orderSerivce.webhook(body)
+    return {
+      success: true
+    }
+  }
 }
