@@ -118,7 +118,7 @@ export class OrderService {
     if (!order) throw new NotFoundException('ORDER_NOTFOUND')
     if (order.userId !== userId) throw new ForbiddenException('ORDER_UNAVAILABLE')
 
-    await this.reservesService.delete(order.reserveId)
+    await this.reservesService.update(order.reserveId, 2)
     await this.ordersRepository.update({ id: order.id }, { status })
   }
 
@@ -129,7 +129,7 @@ export class OrderService {
     if (!order) throw new NotFoundException('ORDER_NOTFOUND')
 
     if (status === 'CANCEL') {
-      await this.reservesService.delete(order.reserveId)
+      await this.reservesService.update(order.reserveId, 2)
       await this.ordersRepository.update({ id: order.id }, { status: OrderStatus.CANCELED })
     }
   }

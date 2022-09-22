@@ -41,6 +41,10 @@ export class ReservesService {
     await this.reservesRepository.delete({ id })
   }
 
+  async update (id: number, status: number) {
+    return this.reservesRepository.update({ id }, { status })
+  }
+
   async findAndCount (start: Date, end: Date) {
     return await this.reservesRepository.count({
       where: [
