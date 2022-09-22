@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Between, Not, Repository } from 'typeorm'
+import { Between, Equal, Not, Repository } from 'typeorm'
 import { Reserves } from 'parkingspace-commons'
 
 @Injectable()
@@ -50,7 +50,7 @@ export class ReservesService {
       where: [
         { startAt: Between(start, end) },
         { endAt: Between(start, end) },
-        { status: Not(2) }
+        { status: Not(Equal(2)) }
       ]
     })
   }
