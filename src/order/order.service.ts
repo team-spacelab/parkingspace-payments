@@ -31,9 +31,8 @@ export class OrderService {
   ) {}
 
   async findOne (id: string, userId: number) {
-    const order = await this.ordersRepository.findOneBy({ id })
+    const order = await this.ordersRepository.findOne({ where: { id, userId } })
     if (!order) throw new NotFoundException('ORDER_NOTFOUND')
-    if (order.userId !== userId) throw new ForbiddenException('ORDER_UNAVAILABLE')
 
     return order
   }
@@ -62,10 +61,7 @@ export class OrderService {
     const reserveInfo = await this.reservesService.findAndCount(startat, endat)
     if (reserveInfo) throw new NotAcceptableException('RESERVE_UNAVAILABLE')
 
-    const unit = (new Date(endat).getTime() - new Date(startat).getTime()) / 60000
-    if (unit % zoneInfo.parentSpace.timeUnit !== 0) throw new NotAcceptableException('COST_UNAVAILABLE')
-
-    const amount = (zoneInfo.parentSpace.defaultCost + zoneInfo.costDiffrence) * unit - point
+    const amount = Math.floor((endat.getTime() - startat.getTime()) / (zoneInfo.parentSpace.timeUnit * 60 * 1000) * zoneInfo.parentSpace.defaultCost) - point
     if (amount < 0) throw new NotAcceptableException('COST_TOO_LOW')
 
     const reserve = await this.reservesService.create(zoneInfo.id, user.id, startat, endat)
@@ -77,7 +73,8 @@ export class OrderService {
       reserveId: reserve,
       amount,
       point,
-      method
+      method,
+      status: amount === 0 ? OrderStatus.DONE : OrderStatus.READY
     })
 
     return {
@@ -102,6 +99,7 @@ export class OrderService {
       throw new BadRequestException(response.message)
     }
 
+    await this.usersService.updatePoint(userId, order.point * -1)
     await this.updateOrder(tossBody.orderId, OrderStatus.DONE, response.data.receipt)
   }
 

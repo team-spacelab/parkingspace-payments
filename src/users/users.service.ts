@@ -13,4 +13,11 @@ export class UsersService {
   public async findOne (id: number) {
     return await this.usersRepository.findOne({ where: { id } })
   }
+
+  public async updatePoint (id: number, point: number) {
+    const user = await this.usersRepository.findOne({ where: { id } })
+    if (!user) return false
+    await this.usersRepository.update({ id }, { point: user.point + point })
+    return true
+  }
 }
