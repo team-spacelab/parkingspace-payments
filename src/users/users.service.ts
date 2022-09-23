@@ -15,9 +15,10 @@ export class UsersService {
   }
 
   public async updatePoint (id: number, point: number) {
-    const user = await this.usersRepository.findOne({ where: { id } })
+    console.log(point, id)
+    const user = await this.usersRepository.findOne({ where: { id }, select: { point: true } })
     if (!user) return false
-    await this.usersRepository.update({ id }, { point: user.point + point })
+    await this.usersRepository.update(id, { point: user.point + point })
     return true
   }
 }
