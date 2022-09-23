@@ -57,9 +57,7 @@ export class ReservesService {
   }
 
   async create (zoneId: number, userId: number, startAt: Date, endAt: Date) {
-    const start = new Date(new Date(startAt).getTime() - 9 * 60 * 60 * 1000)
-    const end = new Date(new Date(endAt).getTime() - 9 * 60 * 60 * 1000)
-    const reserve = await this.reservesRepository.insert({ zoneId, userId, startAt: start, endAt: end, status: 1 })
+    const reserve = await this.reservesRepository.insert({ zoneId, userId, startAt, endAt, status: 1 })
     return reserve.generatedMaps[0].id
   }
 }
