@@ -93,8 +93,8 @@ export class OrderService {
       throw new NotAcceptableException('ORDER_TAMPERING')
     }
 
-    const response = await this.pgService.confirmOrder(userId, tossBody.paymentKey, tossBody.orderId)
-    if (response.status !== 200) {
+    const response = await this.pgService.confirmOrder(tossBody.amount, tossBody.paymentKey, tossBody.orderId, userId)
+    if (!response.status) {
       await this.updateOrder(tossBody.orderId, OrderStatus.CANCELED)
       throw new BadRequestException(response.message)
     }

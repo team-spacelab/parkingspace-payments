@@ -28,12 +28,13 @@ export class PgService {
     return body
   }
 
-  async confirmOrder (customerKey: number, paymentKey: string, orderId: string) {
+  async confirmOrder (amount: number, paymentKey: string, orderId: string, userId: number) {
     const { statusCode, body } =
       await this.request('/v1/brandpay/payments/confirm', 'POST', {
-        customerKey: 'user-' + customerKey,
         paymentKey,
-        orderId
+        amount,
+        orderId,
+        customerKey: 'user-' + userId
       }) as any
 
     if (statusCode !== 200) {
@@ -75,6 +76,6 @@ export class PgService {
         }
       })
 
-    return { statusCode, body: body.json() }
+    return { statusCode, body: await body.json() }
   }
 }
