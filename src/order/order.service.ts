@@ -98,9 +98,12 @@ export class OrderService {
       await this.updateOrder(tossBody.orderId, OrderStatus.CANCELED)
       throw new BadRequestException(response.message)
     }
+    if (response.body.status === 'DONE') {
+      throw new BadRequestException('ORDER_ALREADY_DONE')
+    }
 
     await this.usersService.updatePoint(userId, order.point * -1)
-    await this.updateOrder(tossBody.orderId, OrderStatus.DONE, response.data.receipt)
+    await this.updateOrder(tossBody.orderId, OrderStatus.DONE, response.body.receipt.url)
   }
 
   private async updateOrder (id: string, status?: OrderStatus, receipt?: string) {
