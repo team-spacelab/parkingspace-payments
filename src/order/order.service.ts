@@ -102,7 +102,11 @@ export class OrderService {
     //   throw new BadRequestException('ORDER_ALREADY_DONE')
     // }
 
+    const zone = await this.zonesService.findOne(order.zoneId)
+
+    await this.reservesService.update(order.reserveId, 0)
     await this.usersService.updatePoint(userId, order.point * -1)
+    await this.usersService.updatePoint(zone.parentSpace.managerId, order.amount)
     await this.updateOrder(tossBody.orderId, OrderStatus.DONE, response.body.receipt.url)
   }
 
