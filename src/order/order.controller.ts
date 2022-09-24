@@ -28,6 +28,20 @@ export class OrderController {
     }
   }
 
+  @Get('/space/:id')
+  @ApiBearerAuth()
+  @UseGuards(ClientGuard)
+  public async getSpaceOrders (
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response
+  ): Promise<ResponseBody<any>> {
+    const data = await this.orderSerivce.findBySpaceId(id, res.locals.userId)
+    return {
+      success: true,
+      data
+    }
+  }
+
   @Post('/')
   @ApiBearerAuth()
   @UseGuards(ClientGuard)

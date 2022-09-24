@@ -14,7 +14,7 @@ import { ZonesService } from 'src/zones/zones.service'
 import { Repository } from 'typeorm'
 import { ConfirmOrderBodyDto } from './dto/ConfirmOrderBody.dto'
 import { GenerateOrderBodyDto } from './dto/GenerateOrderBody.dto'
-import { CarStatus, Orders, OrderStatus } from 'parkingspace-commons'
+import { CarStatus, Orders, OrderStatus, Spaces, SpaceStatus } from 'parkingspace-commons'
 import { randomUUID } from 'crypto'
 import { PgService } from 'src/pg/pg.service'
 
@@ -23,6 +23,8 @@ export class OrderService {
   constructor (
     @InjectRepository(Orders)
     private readonly ordersRepository: Repository<Orders>,
+    @InjectRepository(Spaces)
+    private readonly spacesRepository: Repository<Spaces>,
     private readonly reservesService: ReservesService,
     private readonly zonesService: ZonesService,
     private readonly usersService: UsersService,
@@ -35,6 +37,25 @@ export class OrderService {
     if (!order) throw new NotFoundException('ORDER_NOTFOUND')
 
     return order
+  }
+
+  async findBySpaceId (spaceId: number, userId: number) {
+    const space = await this.spacesRepository.findOne({ where: { id: spaceId, status: SpaceStatus.ENABLED, managerId: userId }, relations: { childrenZones: true } })
+    if (!space) throw new NotFoundException('SPACE_NOTFOUND')
+    const zoneId = space.childrenZones[0].id
+
+    const orders = await this.ordersRepository.find({
+      where: {
+        zoneId,
+        status: OrderStatus.DONE
+      },
+      select: {
+        id: true,
+        status: true,
+        amount: true
+      }
+    })
+    return orders
   }
 
   async findByUserId (userId: number) {
@@ -138,6 +159,11 @@ export class OrderService {
     if (status === 'CANCEL') {
       await this.reservesService.update(order.reserveId, 2)
       await this.ordersRepository.update({ id: order.id }, { status: OrderStatus.CANCELED })
+    }
+
+    if (status === 'EXPIRED') {
+      await this.reservesService.update(order.reserveId, 2)
+      await this.ordersRepository.update({ id: order.id }, { status: OrderStatus.EXPIRED })
     }
   }
 }
